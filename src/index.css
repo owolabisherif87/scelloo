@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+ul.p-tabview-nav,
+a.p-tabview-nav-link,
+div.p-tabview-panels {
+  @apply bg-transparent !important;
+}
+
+tr {
+  @apply border-t border-gray-100 hover:bg-gray-50 cursor-pointer bg-white;
+}
+th {
+  @apply bg-gray-50;
+}
+th,
+td {
+  @apply p-3;
+}
+
+button {
+  @apply p-2;
+}
