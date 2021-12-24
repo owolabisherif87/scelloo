@@ -21,10 +21,10 @@
 <script>
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-import All from "./All.vue";
-import Paid from "./Paid.vue";
-import UnPaid from "./UnPaid.vue";
-import Overdue from "./Overdue.vue";
+import All from "./screens/All.vue";
+import Paid from "./screens/Paid.vue";
+import UnPaid from "./screens/UnPaid.vue";
+import Overdue from "./screens/Overdue.vue";
 
 export default {
   name: "Header",

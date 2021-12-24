@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import DataTable from "./utils/DataTable.vue";
+import DataTable from "../utils/DataTable.vue";
 export default {
   name: "Overdue",
   components: {

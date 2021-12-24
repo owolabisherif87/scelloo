@@ -23,7 +23,12 @@
               class="flex justify-between items-center mb-1 py-1 px-2 hover:bg-gray-100 cursor-pointer rounded-md ml-0"
             >
               <p>{{ item.text }}</p>
-              <input type="radio" :value="item.slug" v-model="sort" />
+              <input
+                type="radio"
+                :value="item.slug"
+                v-model="sort"
+                class="cursor-pointer"
+              />
             </li>
           </ul>
           <div class="mb-0.5 pl-2 text-gray-300">USERS:</div>
@@ -34,7 +39,12 @@
               class="flex justify-between items-center mb-1 py-1 px-2 hover:bg-gray-100 cursor-pointer rounded-md"
             >
               <p>{{ item.text }}</p>
-              <input type="radio" :value="item.slug" v-model="status" />
+              <input
+                type="radio"
+                :value="item.slug"
+                v-model="status"
+                class="cursor-pointer"
+              />
             </li>
           </ul>
         </div>
@@ -46,12 +56,60 @@
         />
       </div>
       <button
-        class="bg-purple-800 text-white font-semibold text-lg rounded-lg focus:outline-none"
+        class="bg-purple-800 text-white font-semibold text-lg rounded-lg focus:outline-none disabled:opacity-70"
         @click="payDue"
+        :disabled="loading"
       >
         PAY DUES
       </button>
     </div>
+    <OverlayPanel
+      ref="op"
+      :showCloseIcon="true"
+      :dismissable="true"
+      :breakpoints="{
+        '960px': '75vw',
+        '640px': '100vw',
+      }"
+      :style="{ width: '200px' }"
+    >
+      <div class="flex flex-col items-start pb-1">
+        <button
+          v-for="(more, index) in mores"
+          :key="index"
+          class="text-md hover:bg-gray-100 py-1 px-2 rounded-lg text-gray-400"
+          @click="trigger(index)"
+        >
+          {{ more }}
+        </button>
+        <button
+          @click="activate"
+          class="hover:bg-gray-100 py-1 px-2 rounded-lg text-green-400"
+        >
+          {{ statusText }}
+        </button>
+      </div>
+      <div class="border-t border-gray-200 text-red-600 pt-1">
+        <button @click="del" class="hover:bg-gray-100 py-1 px-2 rounded-lg">
+          Delete
+        </button>
+      </div>
+    </OverlayPanel>
+    <OverlayPanel
+      ref="op2"
+      :showCloseIcon="false"
+      :dismissable="true"
+      :breakpoints="{
+        '960px': '75vw',
+        '640px': '100vw',
+      }"
+      :style="{ width: '200px' }"
+    >
+      <p>
+        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente,
+        tempora?
+      </p>
+    </OverlayPanel>
     <table class="table-auto w-full" v-if="users.length">
       <thead>
         <tr>
@@ -64,7 +122,14 @@
           <th class="text-right">AMOUNT</th>
           <th class="text-left"></th>
           <th class="text-left">
-            <i class="pi pi-ellipsis-v text-gray-300"></i>
+            <button
+              @click="toggle"
+              aria:haspopup="true"
+              aria-controls="overlay_panel"
+              :disabled="true"
+            >
+              <i class="pi pi-ellipsis-v text-gray-300"></i>
+            </button>
           </th>
         </tr>
       </thead>
@@ -127,10 +192,24 @@
             <p class="text-sm text-gray-400">USD</p>
           </td>
           <td class="text-center text-gray-400">
-            <button>View more</button>
+            <button
+              @click="toggle2"
+              aria:haspopup="true"
+              aria-controls="overlay_panel2"
+            >
+              View more
+            </button>
           </td>
           <td>
-            <p><i class="pi pi-ellipsis-v text-gray-300"></i></p>
+            <p>
+              <button
+                @click="toggle(user.id, $event)"
+                aria:haspopup="true"
+                aria-controls="overlay_panel2"
+              >
+                <i class="pi pi-ellipsis-v text-gray-300"></i>
+              </button>
+            </p>
           </td>
         </tr>
         <template v-if="show == user.id">
@@ -196,13 +275,16 @@ import { computed, ref } from "@vue/reactivity";
 import ProgressSpinner from "primevue/progressspinner";
 import api from "../../composables/api";
 import { watch } from "@vue/runtime-core";
+import OverlayPanel from "primevue/overlaypanel";
 
 export default {
   name: "All",
   components: {
     ProgressSpinner,
+    OverlayPanel,
   },
   props: ["type"],
+
   setup({ type }) {
     const tab = ref("");
     const show = ref(null);
@@ -215,6 +297,9 @@ export default {
     const userIds = ref([]);
     const sort = ref("default");
     const status = ref("all");
+    const op = ref();
+    const op2 = ref();
+    const selectedItem = ref();
     const sorts = ref([
       {
         slug: "default",
@@ -252,6 +337,8 @@ export default {
         text: "Inactive",
       },
     ]);
+
+    const mores = ref(["Edit", "View Profile"]);
 
     watch(checkAll, () => {
       if (checkAll.value) checked.value = userIds.value;
@@ -326,6 +413,16 @@ export default {
       })
     );
 
+    const statusText = computed(() => {
+      if (!selectedItem.value || !users.value.length) return "Activate User";
+      const status = users.value.find(
+        (item) => +item.id === +selectedItem.value
+      ).userStatus;
+
+      if (status === "active") return "Deactivate User";
+      else return "Activate User";
+    });
+
     const fetchUsers = async () => {
       users.value = [];
       loading.value = true;
@@ -387,10 +484,67 @@ export default {
       }
     };
 
+    const toggle = (id, e) => {
+      if (!id) return;
+      selectedItem.value = id;
+
+      op.value.toggle(e);
+    };
+
+    const toggle2 = (e) => {
+      op2.value.toggle(e);
+    };
+
+    const trigger = (index) => {
+      switch (index) {
+        case 0:
+          edit();
+          break;
+        default:
+          view();
+      }
+    };
+
+    const edit = () => {
+      if (!selectedItem.value) return;
+      console.log("edit");
+    };
+
+    const view = () => {
+      if (!selectedItem.value) return;
+      console.log("view");
+    };
+
+    const activate = async () => {
+      if (!selectedItem.value) return;
+      const status = users.value.find(
+        (item) => +item.id === +selectedItem.value
+      ).userStatus;
+
+      op.value.hide();
+
+      if (status === "active") {
+        await api.deactivate(selectedItem.value);
+
+        await fetchUsers();
+      } else {
+        await api.activate(selectedItem.value);
+
+        await fetchUsers();
+      }
+    };
+
+    const del = async () => {
+      if (!selectedItem.value) return;
+      op.value.hide();
+      await api.del(selectedItem.value);
+
+      await fetchUsers();
+    };
+
     fetchUsers();
 
     return {
-      toggleShow,
       filteredUsers,
       users,
       show,
@@ -403,7 +557,18 @@ export default {
       statuses,
       sort,
       status,
+      op,
+      op2,
+      mores,
+      statusText,
       payDue,
+      toggle,
+      toggle2,
+      toggleShow,
+      trigger,
+      del,
+      activate,
+      trigger,
     };
   },
 };

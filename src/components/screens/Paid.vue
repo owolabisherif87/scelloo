@@ -1,11 +1,11 @@
 <template>
-  <DataTable :type="'all'" />
+  <DataTable :type="'paid'" />
 </template>
 
 <script>
-import DataTable from "./utils/DataTable.vue";
+import DataTable from "../utils/DataTable.vue";
 export default {
-  name: "All",
+  name: "Paid",
   components: {
     DataTable,
   },

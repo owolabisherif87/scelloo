@@ -23,7 +23,44 @@ const markPaid = async (id) => {
 }
 
 
+const activate = async (id) => {
+    await axios
+    .patch(
+      `https://cornie-assessment.herokuapp.com/activate-user/${id}`
+    )
+    .then((res) => {
+      return true
+    })
+    .catch((err) => console.log(err.message));
+}
+
+const deactivate = async (id) => {
+    await axios
+    .patch(
+      `https://cornie-assessment.herokuapp.com/deactivate-user/${id}`
+    )
+    .then((res) => {
+      return true
+    })
+    .catch((err) => console.log(err.message));
+}
+
+const del = async (id) => {
+    await axios
+    .patch(
+      `https://cornie-assessment.herokuapp.com/remove-user/${id}`
+    )
+    .then((res) => {
+      return true
+    })
+    .catch((err) => console.log(err.message));
+}
+
+
 export default {
     getUsers,
     markPaid,
+    activate,
+    deactivate,
+    del
 }

@@ -22,3 +22,11 @@ td {
 button {
   @apply p-2;
 }
+
+.p-overlaypanel-close {
+  @apply bg-white !important;
+}
+
+.p-overlaypanel-close-icon {
+  @apply text-gray-600 !important;
+}
