@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded-xl mt-1 shadow-md overflow-hidden">
+  <div class="rounded-xl mt-1 shadow-md overflow-hidden overflow-x-auto">
     <div
       class="w-full h-13 p-3 bg-white flex flex-row justify-between items-center"
     >
@@ -265,6 +265,23 @@
       <div class="text-lg font-bold text-gray-600">Ooops!</div>
       <div class="text-md text-gray-400">
         No users to load or check your internet connection!
+      </div>
+    </div>
+    <div class="w-full h-13 p-3 bg-white flex flex-row justify-end">
+      <div class="flex">
+        <div class="flex mr-8">
+          <p class="mr-1">Rows per page:</p>
+          <select>
+            <option value="10">10</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+        <div class="mr-8">1-10 of 276</div>
+        <div>
+          <i class="pi pi-chevron-left mr-8"></i>
+          <i class="pi pi-chevron-right"></i>
+        </div>
       </div>
     </div>
   </div>
