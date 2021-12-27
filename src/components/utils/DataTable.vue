@@ -159,7 +159,7 @@
             </p>
             <p class="text-gray-400">{{ user.email }}</p>
           </td>
-          <td>
+          <td class="truncate">
             <p
               class="capitalize font-semibold px-1 rounded-full bg-gray-200 inline-block text-sm"
               :class="
@@ -170,7 +170,7 @@
             </p>
             <p>Last login: {{ user.lastLogin }}</p>
           </td>
-          <td>
+          <td class="truncate">
             <p
               class="capitalize font-semibold px-1 rounded-full inline-block text-sm"
               :class="
@@ -187,11 +187,11 @@
               Paid on: {{ user.paidOn || "0000-00-00" }}
             </p>
           </td>
-          <td class="text-right">
+          <td class="text-right truncate">
             <p class="font-semibold">${{ user.amountInCents }}</p>
             <p class="text-sm text-gray-400">USD</p>
           </td>
-          <td class="text-center text-gray-400">
+          <td class="text-center text-gray-400 truncate">
             <button
               @click="toggle2"
               aria:haspopup="true"
@@ -200,7 +200,7 @@
               View more
             </button>
           </td>
-          <td>
+          <td class="truncate">
             <p>
               <button
                 @click="toggle(user.id, $event)"
